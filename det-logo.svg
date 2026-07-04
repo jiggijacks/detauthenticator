@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" role="img" aria-labelledby="title desc">
+  <title id="title">D.E.T Trade Licence Authenticator logo</title>
+  <desc id="desc">A geometric D.E.T monogram in green and gold.</desc>
+  <rect width="320" height="320" rx="48" fill="#0f3f39"/>
+  <path d="M76 82h74c52 0 91 35 91 78s-39 78-91 78H76V82Zm50 45v66h25c24 0 40-13 40-33s-16-33-40-33h-25Z" fill="#ffffff"/>
+  <path d="M79 255h162" stroke="#d1a84b" stroke-width="18" stroke-linecap="round"/>
+  <circle cx="92" cy="64" r="10" fill="#d1a84b"/>
+  <circle cx="160" cy="64" r="10" fill="#d1a84b"/>
+  <circle cx="228" cy="64" r="10" fill="#d1a84b"/>
+  <text x="160" y="287" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="800" letter-spacing="3" fill="#ffffff">D.E.T</text>
+</svg>
