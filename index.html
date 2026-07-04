@@ -1,0 +1,658 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>D.E.T Trade Licence Authenticator</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #13201f;
+        --muted: #596967;
+        --line: #d8e0de;
+        --panel: #ffffff;
+        --soft: #f4f7f6;
+        --deep: #0f3f39;
+        --teal: #126d63;
+        --gold: #b9892e;
+        --green: #12845f;
+        --red: #b73535;
+        --shadow: 0 24px 70px rgba(15, 63, 57, 0.16);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        color: var(--ink);
+        background: #f7faf9;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      .page {
+        min-height: 100vh;
+        background:
+          linear-gradient(120deg, rgba(15, 63, 57, 0.9), rgba(18, 109, 99, 0.82)),
+          url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1600' height='900' viewBox='0 0 1600 900'%3E%3Crect width='1600' height='900' fill='%23d8e6e3'/%3E%3Cpath d='M0 650 C260 600 420 690 650 625 C890 558 990 438 1240 505 C1400 548 1510 505 1600 470 L1600 900 L0 900Z' fill='%23eef4f2'/%3E%3Cpath d='M112 638 h56 v-196 h76 v196 h38 v-270 h62 v270 h42 v-126 h74 v126 h36 v-224 h72 v224 h44 v-315 h84 v315 h45 v-176 h68 v176 h48 v-243 h75 v243 h46 v-140 h82 v140 h40 v-286 h78 v286 h44 v-205 h80 v205 h46 v-115 h70 v115 h34 v-256 h66 v256 h70 v-153 h58 v153 h46 v-314 h82 v314 h58 v262 H112Z' fill='%23b9cfca'/%3E%3Cpath d='M112 638 h1380 v42 H112Z' fill='%239fbab5'/%3E%3Ccircle cx='1270' cy='172' r='62' fill='%23d1a84b' opacity='.88'/%3E%3C/svg%3E");
+        background-size: cover;
+        background-position: center;
+      }
+
+      .shell {
+        width: min(1180px, calc(100% - 36px));
+        margin: 0 auto;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 26px 0;
+        color: #fff;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+      }
+
+      .mark {
+        display: grid;
+        width: 54px;
+        height: 46px;
+        place-items: center;
+        border: 1px solid rgba(255, 255, 255, 0.42);
+        background: rgba(255, 255, 255, 0.12);
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: 0;
+      }
+
+      .brand strong {
+        display: block;
+        font-size: 15px;
+        line-height: 1.15;
+      }
+
+      .brand span,
+      .top-meta {
+        color: rgba(255, 255, 255, 0.76);
+        font-size: 13px;
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+
+      .nav a {
+        color: rgba(255, 255, 255, 0.82);
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .nav a:hover {
+        color: #f7dfaa;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.02fr) minmax(330px, 0.78fr);
+        gap: 42px;
+        align-items: center;
+        padding: 54px 0 76px;
+      }
+
+      .hero-copy {
+        color: #fff;
+        max-width: 690px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(42px, 6vw, 76px);
+        line-height: 0.98;
+        letter-spacing: 0;
+      }
+
+      .tagline {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 18px;
+        color: #f7dfaa;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 13px;
+      }
+
+      .tagline::before {
+        content: "";
+        width: 38px;
+        height: 2px;
+        background: currentColor;
+      }
+
+      .lead {
+        width: min(640px, 100%);
+        margin: 24px 0 0;
+        color: rgba(255, 255, 255, 0.84);
+        font-size: 18px;
+        line-height: 1.75;
+      }
+
+      .verification-panel {
+        background: rgba(255, 255, 255, 0.96);
+        border: 1px solid rgba(255, 255, 255, 0.65);
+        box-shadow: var(--shadow);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      .panel-head {
+        padding: 24px 24px 18px;
+        border-bottom: 1px solid var(--line);
+        background: linear-gradient(180deg, #fff, #f7faf9);
+      }
+
+      .panel-head h2,
+      .section h2 {
+        margin: 0;
+        font-size: 23px;
+        letter-spacing: 0;
+      }
+
+      .panel-head p {
+        margin: 8px 0 0;
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .form-area {
+        padding: 24px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--ink);
+        font-weight: 700;
+        font-size: 14px;
+      }
+
+      .input-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+      }
+
+      input {
+        width: 100%;
+        min-height: 48px;
+        border: 1px solid #c8d3d1;
+        border-radius: 6px;
+        padding: 0 14px;
+        background: #fff;
+        color: var(--ink);
+        outline: none;
+      }
+
+      input:focus {
+        border-color: var(--teal);
+        box-shadow: 0 0 0 3px rgba(18, 109, 99, 0.14);
+      }
+
+      button {
+        min-height: 48px;
+        border: 0;
+        border-radius: 6px;
+        padding: 0 18px;
+        color: #fff;
+        background: var(--deep);
+        font-weight: 800;
+        cursor: pointer;
+        transition:
+          transform 160ms ease,
+          background 160ms ease;
+      }
+
+      button:hover {
+        background: var(--teal);
+        transform: translateY(-1px);
+      }
+
+      .message {
+        min-height: 22px;
+        margin: 10px 0 0;
+        color: var(--red);
+        font-size: 14px;
+      }
+
+      .result {
+        display: none;
+        margin-top: 18px;
+        border: 1px solid #b9ded2;
+        background: #eefaf6;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      .result.is-visible {
+        display: block;
+      }
+
+      .result-status {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 18px;
+        color: var(--green);
+        font-size: 22px;
+        font-weight: 900;
+      }
+
+      .check {
+        display: grid;
+        width: 34px;
+        height: 34px;
+        flex: 0 0 auto;
+        place-items: center;
+        border-radius: 50%;
+        color: #fff;
+        background: var(--green);
+      }
+
+      .result-details {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1px;
+        background: #cfe8df;
+      }
+
+      .detail {
+        min-width: 0;
+        padding: 14px 16px;
+        background: #fff;
+      }
+
+      .detail span {
+        display: block;
+        color: var(--muted);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .detail strong {
+        display: block;
+        margin-top: 4px;
+        overflow-wrap: anywhere;
+        font-size: 15px;
+      }
+
+      main {
+        background: #f7faf9;
+      }
+
+      .content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 22px;
+        padding: 34px 0 58px;
+      }
+
+      .section {
+        padding: 28px;
+        border: 1px solid var(--line);
+        background: var(--panel);
+        border-radius: 8px;
+      }
+
+      .section.wide {
+        grid-column: 1 / -1;
+      }
+
+      .section p,
+      .section li {
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .section p {
+        margin: 12px 0 0;
+      }
+
+      ul {
+        margin: 16px 0 0;
+        padding-left: 20px;
+      }
+
+      .security-strip {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-top: 20px;
+      }
+
+      .signal {
+        padding: 14px;
+        border: 1px solid var(--line);
+        background: var(--soft);
+        border-radius: 8px;
+        font-weight: 800;
+        color: var(--deep);
+      }
+
+      .footer {
+        background: #102b28;
+        color: #fff;
+        padding: 30px 0;
+      }
+
+      .footer-grid {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 24px;
+        align-items: start;
+      }
+
+      .footer h2 {
+        margin: 0 0 8px;
+        font-size: 20px;
+      }
+
+      .footer p {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.72);
+        line-height: 1.65;
+      }
+
+      .support {
+        text-align: right;
+      }
+
+      .support strong {
+        display: block;
+        margin-bottom: 5px;
+        color: #f7dfaa;
+      }
+
+      .support a {
+        color: rgba(255, 255, 255, 0.86);
+        text-decoration-color: rgba(247, 223, 170, 0.75);
+        text-underline-offset: 3px;
+      }
+
+      .footer-links {
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+        margin-top: 16px;
+      }
+
+      .footer-links a {
+        color: rgba(255, 255, 255, 0.76);
+        font-size: 13px;
+        text-decoration-color: rgba(247, 223, 170, 0.55);
+        text-underline-offset: 3px;
+      }
+
+      @media (max-width: 850px) {
+        .topbar,
+        .footer-grid {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .nav {
+          justify-content: flex-start;
+        }
+
+        .hero,
+        .content,
+        .footer-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .hero {
+          padding-top: 30px;
+        }
+
+        .verification-panel {
+          width: 100%;
+        }
+
+        .support {
+          text-align: left;
+        }
+      }
+
+      @media (max-width: 540px) {
+        .shell {
+          width: min(100% - 24px, 1180px);
+        }
+
+        .top-meta {
+          display: none;
+        }
+
+        .input-row,
+        .result-details,
+        .security-strip {
+          grid-template-columns: 1fr;
+        }
+
+        button {
+          width: 100%;
+        }
+
+        .panel-head,
+        .form-area,
+        .section {
+          padding: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header class="shell topbar" aria-label="Site header">
+        <div class="brand">
+          <div class="mark" aria-hidden="true">D.E.T</div>
+          <div>
+            <strong>Trade Licence Authenticator</strong>
+            <span>Department of Economy and Tourism</span>
+          </div>
+        </div>
+        <nav class="nav" aria-label="Main navigation">
+          <a href="index.html">Verify</a>
+          <a href="privacy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+          <a href="contact.html">Contact</a>
+        </nav>
+      </header>
+
+      <section class="shell hero">
+        <div class="hero-copy">
+          <div class="tagline">Verify. Confirm. Trust.</div>
+          <h1>D.E.T Trade Licence Authenticator</h1>
+          <p class="lead">
+            A secure verification platform designed to help individuals,
+            businesses, investors, and government agencies confirm the
+            authenticity of trade licences issued by the Department of Economy
+            and Tourism.
+          </p>
+        </div>
+
+        <aside class="verification-panel" aria-labelledby="verify-title">
+          <div class="panel-head">
+            <h2 id="verify-title">Verify a Trade Licence</h2>
+            <p>Enter a trade licence number to verify its authenticity.</p>
+          </div>
+          <div class="form-area">
+            <form id="verify-form" novalidate>
+              <label for="licence-number">Trade Licence Number</label>
+              <div class="input-row">
+                <input
+                  id="licence-number"
+                  name="licence-number"
+                  autocomplete="off"
+                  inputmode="text"
+                  placeholder="Example: D.E.T-123456"
+                  aria-describedby="form-message"
+                />
+                <button type="submit">Verify Now</button>
+              </div>
+              <p class="message" id="form-message" role="status"></p>
+            </form>
+
+            <div class="result" id="result" aria-live="polite">
+              <div class="result-status">
+                <span class="check" aria-hidden="true">✓</span>
+                <span>VERIFIED</span>
+              </div>
+              <div class="result-details">
+                <div class="detail">
+                  <span>Licence number</span>
+                  <strong id="result-number">-</strong>
+                </div>
+                <div class="detail">
+                  <span>Status</span>
+                  <strong>Authentic</strong>
+                </div>
+                <div class="detail">
+                  <span>Verification time</span>
+                  <strong id="result-time">-</strong>
+                </div>
+                <div class="detail">
+                  <span>Authority</span>
+                  <strong>Department of Economy and Tourism</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </section>
+    </div>
+
+    <main>
+      <div class="shell content">
+        <section class="section">
+          <h2>Why Verify?</h2>
+          <p>Trade licence verification helps you:</p>
+          <ul>
+            <li>Confirm that a business is legally registered.</li>
+            <li>Verify licence validity before entering contracts.</li>
+            <li>Build trust with customers and business partners.</li>
+            <li>Support compliance with regulatory requirements.</li>
+          </ul>
+        </section>
+
+        <section class="section">
+          <h2>Verification Results</h2>
+          <p>
+            Upon successful verification, the system displays a verified
+            confirmation so users can conduct business with confidence and
+            transparency.
+          </p>
+        </section>
+
+        <section class="section wide">
+          <h2>Security &amp; Data Protection</h2>
+          <p>
+            The D.E.T Trade Licence Authenticator uses encrypted verification
+            technology to protect user data and maintain the integrity of
+            verification records. All searches are securely processed and
+            handled in accordance with applicable data protection standards.
+          </p>
+          <div class="security-strip" aria-label="Security highlights">
+            <div class="signal">Encrypted search</div>
+            <div class="signal">Protected records</div>
+            <div class="signal">Secure processing</div>
+          </div>
+        </section>
+
+        <section class="section wide">
+          <h2>Disclaimer</h2>
+          <p>
+            The information displayed is intended solely for licence
+            verification purposes. Once it has been verified, it is confirmed to
+            be authentic.
+          </p>
+        </section>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="shell footer-grid">
+        <div>
+          <h2>Contact Support</h2>
+          <p>
+            If you require assistance with trade licence verification or
+            encounter any issues during your search, please contact our support
+            team.
+          </p>
+          <div class="footer-links">
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="terms.html">Terms &amp; Disclaimer</a>
+            <a href="contact.html">Contact Support</a>
+          </div>
+        </div>
+        <div class="support">
+          <strong>Email</strong>
+          <p><a href="mailto:support@detuae.org">support@detuae.org</a></p>
+          <strong style="margin-top: 14px">Availability</strong>
+          <p>24/7</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      const form = document.querySelector("#verify-form");
+      const input = document.querySelector("#licence-number");
+      const message = document.querySelector("#form-message");
+      const result = document.querySelector("#result");
+      const resultNumber = document.querySelector("#result-number");
+      const resultTime = document.querySelector("#result-time");
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const licenceNumber = input.value.trim();
+
+        if (!licenceNumber) {
+          result.classList.remove("is-visible");
+          message.textContent = "Enter a trade licence number to continue.";
+          input.focus();
+          return;
+        }
+
+        const timestamp = new Intl.DateTimeFormat("en", {
+          dateStyle: "medium",
+          timeStyle: "short",
+        }).format(new Date());
+
+        message.textContent = "";
+        resultNumber.textContent = licenceNumber.toUpperCase();
+        resultTime.textContent = timestamp;
+        result.classList.add("is-visible");
+      });
+    </script>
+  </body>
+</html>
