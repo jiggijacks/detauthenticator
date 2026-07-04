@@ -70,11 +70,13 @@
       }
 
       .mark {
-        width: 54px;
-        height: 46px;
+        width: 100px;
+        height: 54px;
+        padding: 5px;
         border: 1px solid rgba(255, 255, 255, 0.42);
-        background: rgba(255, 255, 255, 0.12);
-        object-fit: cover;
+        border-radius: 6px;
+        background: #fff;
+        object-fit: contain;
       }
 
       .brand strong {
@@ -255,6 +257,11 @@
         display: block;
       }
 
+      .result.is-invalid {
+        border-color: #efc4c4;
+        background: #fff5f5;
+      }
+
       .result-status {
         display: flex;
         align-items: center;
@@ -263,6 +270,10 @@
         color: var(--green);
         font-size: 22px;
         font-weight: 900;
+      }
+
+      .result.is-invalid .result-status {
+        color: var(--red);
       }
 
       .check {
@@ -274,6 +285,10 @@
         border-radius: 50%;
         color: #fff;
         background: var(--green);
+      }
+
+      .result.is-invalid .check {
+        background: var(--red);
       }
 
       .result-details {
@@ -472,7 +487,7 @@
     <div class="page">
       <header class="shell topbar" aria-label="Site header">
         <div class="brand">
-          <img class="mark" src="det-logo.svg" alt="" aria-hidden="true" />
+          <img class="mark" src="det-logo.png" alt="" aria-hidden="true" />
           <div>
             <strong>Trade Licence Authenticator</strong>
             <span>Department of Economy and Tourism</span>
@@ -522,8 +537,8 @@
 
             <div class="result" id="result" aria-live="polite">
               <div class="result-status">
-                <span class="check" aria-hidden="true">✓</span>
-                <span>VERIFIED</span>
+                <span class="check" id="result-icon" aria-hidden="true">✓</span>
+                <span id="result-status-text">VERIFIED</span>
               </div>
               <div class="result-details">
                 <div class="detail">
@@ -531,8 +546,12 @@
                   <strong id="result-number">-</strong>
                 </div>
                 <div class="detail">
+                  <span>Trade name</span>
+                  <strong id="result-trade-name">-</strong>
+                </div>
+                <div class="detail">
                   <span>Status</span>
-                  <strong>Authentic</strong>
+                  <strong id="result-status-detail">Authentic</strong>
                 </div>
                 <div class="detail">
                   <span>Verification time</span>
@@ -615,6 +634,12 @@
         <div class="support">
           <strong>Email</strong>
           <p><a href="mailto:support@detuae.org">support@detuae.org</a></p>
+          <strong style="margin-top: 14px">Visit</strong>
+          <p>
+            <a href="https://www.dubaidet.gov.ae" target="_blank" rel="noopener">
+              https://www.dubaidet.gov.ae
+            </a>
+          </p>
           <strong style="margin-top: 14px">Availability</strong>
           <p>24/7</p>
         </div>
@@ -626,29 +651,50 @@
       const input = document.querySelector("#licence-number");
       const message = document.querySelector("#form-message");
       const result = document.querySelector("#result");
+      const resultIcon = document.querySelector("#result-icon");
+      const resultStatusText = document.querySelector("#result-status-text");
       const resultNumber = document.querySelector("#result-number");
+      const resultTradeName = document.querySelector("#result-trade-name");
+      const resultStatusDetail = document.querySelector("#result-status-detail");
       const resultTime = document.querySelector("#result-time");
+      const validLicenceNumber = "26/1085476";
+      const validTradeName = "Irina Dreyt influencing and model";
+      let verificationTimer;
 
       form.addEventListener("submit", (event) => {
         event.preventDefault();
         const licenceNumber = input.value.trim();
+        window.clearTimeout(verificationTimer);
 
         if (!licenceNumber) {
-          result.classList.remove("is-visible");
+          result.classList.remove("is-visible", "is-invalid");
           message.textContent = "Enter a trade licence number to continue.";
           input.focus();
           return;
         }
 
-        const timestamp = new Intl.DateTimeFormat("en", {
-          dateStyle: "medium",
-          timeStyle: "short",
-        }).format(new Date());
+        result.classList.remove("is-visible", "is-invalid");
+        message.textContent = "Checking licence record...";
+        form.querySelector("button").disabled = true;
 
-        message.textContent = "";
-        resultNumber.textContent = licenceNumber.toUpperCase();
-        resultTime.textContent = timestamp;
-        result.classList.add("is-visible");
+        verificationTimer = window.setTimeout(() => {
+          const timestamp = new Intl.DateTimeFormat("en", {
+            dateStyle: "medium",
+            timeStyle: "short",
+          }).format(new Date());
+          const isValid = licenceNumber === validLicenceNumber;
+
+          message.textContent = "";
+          result.classList.toggle("is-invalid", !isValid);
+          resultIcon.textContent = isValid ? "✓" : "!";
+          resultStatusText.textContent = isValid ? "VERIFIED" : "LICENCE NOT FOUND";
+          resultNumber.textContent = licenceNumber;
+          resultTradeName.textContent = isValid ? validTradeName : "The licence number entered could not be verified in the Department of Economy and Tourism records.";
+          resultStatusDetail.textContent = isValid ? "Authentic" : "Please check the licence number and try again.";
+          resultTime.textContent = timestamp;
+          result.classList.add("is-visible");
+          form.querySelector("button").disabled = false;
+        }, 3000);
       });
     </script>
   </body>

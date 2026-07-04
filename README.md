@@ -8,6 +8,8 @@ Static website for the D.E.T Trade Licence Authenticator.
 - `privacy.html` - Privacy policy
 - `terms.html` - Terms and disclaimer
 - `contact.html` - Contact support
+- `det-logo.svg` - Site logo
+- `favicon.svg` - Browser icon
 
 ## Deployment
 
